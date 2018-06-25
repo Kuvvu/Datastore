@@ -1,0 +1,21 @@
+{
+    "name": "kuvvu/datastore",
+    "description": "Simple PHP Datastore",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability":"stable",
+    "authors": [
+        {
+            "name": "Simon Jenny",
+            "email": "simon.jenny@kuvvu.ch"
+        }
+    ],
+    "require": {
+      "php": ">=5.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Datastore\\": "src/"
+        }
+    }
+}
