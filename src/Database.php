@@ -8,36 +8,26 @@ class Database{
    * Datastorage Class - Simple Key->Value Storage
    *
    *
-   * @name String name of Storage
+   * @array Array with Options
    * @return Database Object
   */
 
-  protected $store;
-  protected $path = "storage/";
+  protected $engine;
+  protected $name;
 
   public function __construct($options = null){
 
     if (!is_array($options)) return false;
-    if (isset($options[ 'path' ]))
+    if (isset($options[ 'engine' ]))
 		{
-			$this->path = strtolower($options[ 'path' ]);
+			$this->engine = $options[ 'engine' ];
 		}
     if (isset($options[ 'name' ]))
 		{
-			$this->store = $this->path.strtolower($options[ 'name' ]).".json";
+			$this->name = $options[ 'name' ];
 		}
+    $this->data = $this->engine->load($this->name);
 
-    if(!file_exists($this->store)){
-      if(!file_exists($this->path)) mkdir($this->path, 0777, true);
-      $this->data = [];
-    } else {
-      $this->data  = json_decode(file_get_contents($this->store), true);
-    }
-
-  }
-
-  private function save(){
-    return (@file_put_contents($this->store, json_encode($this->data))) ? true : false;
   }
 
   /**
@@ -63,7 +53,7 @@ class Database{
 
   public function set($key, $value){
     $this->data[$key] = $value;
-    return $this->save();
+    return $this->engine->save($this->data, $this->name);
   }
 
   /**
@@ -76,7 +66,7 @@ class Database{
 
   public function bulk($array){
     $this->data = $array;
-    return $this->save();
+    return $this->engine->save($this->data, $this->name);
   }
 
   /**
@@ -89,7 +79,7 @@ class Database{
 
   public function remove($key){
     unset($this->data[$key]);
-    return $this->save();
+    return $this->engine->save($this->data, $this->name);
   }
 
   /**
@@ -101,7 +91,7 @@ class Database{
 
   public function destroy(){
     $this->data = null;
-    unlink($this->store);
+    return $this->engine->delete($this->name);
   }
 
 }
